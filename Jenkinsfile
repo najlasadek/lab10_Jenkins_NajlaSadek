@@ -1,7 +1,8 @@
 pipeline {
     agent any
     environment {
-        VIRTUAL_ENV = 'venv'
+        PYTHON = "C:\\Users\\sadek\\AppData\\Local\\Programs\\Python\\Python310\\python.exe"
+        VENV = "venv"
     }
 
     stages {
@@ -9,36 +10,39 @@ pipeline {
         stage('Setup') {
             steps {
                 script {
-                    if (!fileExists("${env.WORKSPACE}\\${VIRTUAL_ENV}\\Scripts\\activate")) {
-                        bat "python -m venv ${VIRTUAL_ENV}"
+                    // Create virtual environment if it does not exist
+                    if (!fileExists("${env.WORKSPACE}\\${VENV}\\Scripts\\activate.bat")) {
+                        bat "\"${PYTHON}\" -m venv ${VENV}"
                     }
-                    bat "${VIRTUAL_ENV}\\Scripts\\pip install -r requirements.txt"
+                    // Install dependencies
+                    bat "\"${env.WORKSPACE}\\${VENV}\\Scripts\\python.exe\" -m pip install --upgrade pip"
+                    bat "\"${env.WORKSPACE}\\${VENV}\\Scripts\\python.exe\" -m pip install -r requirements.txt"
                 }
             }
         }
 
         stage('Lint') {
             steps {
-                bat "${VIRTUAL_ENV}\\Scripts\\flake8 app.py"
+                bat "\"${env.WORKSPACE}\\${VENV}\\Scripts\\python.exe\" -m flake8 app.py"
             }
         }
 
         stage('Test') {
             steps {
-                bat "${VIRTUAL_ENV}\\Scripts\\pytest"
+                bat "\"${env.WORKSPACE}\\${VENV}\\Scripts\\python.exe\" -m pytest"
             }
         }
 
         stage('Coverage') {
             steps {
-                bat "${VIRTUAL_ENV}\\Scripts\\coverage run -m pytest"
-                bat "${VIRTUAL_ENV}\\Scripts\\coverage report -m"
+                bat "\"${env.WORKSPACE}\\${VENV}\\Scripts\\python.exe\" -m coverage run -m pytest"
+                bat "\"${env.WORKSPACE}\\${VENV}\\Scripts\\python.exe\" -m coverage report -m"
             }
         }
 
         stage('Security Scan') {
             steps {
-                bat "${VIRTUAL_ENV}\\Scripts\\bandit -r ."
+                bat "\"${env.WORKSPACE}\\${VENV}\\Scripts\\python.exe\" -m bandit -r ."
             }
         }
 
