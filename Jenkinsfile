@@ -9,43 +9,43 @@ pipeline {
         stage('Setup') {
             steps {
                 script {
-                    if (!fileExists("${env.WORKSPACE}/${VIRTUAL_ENV}")) {
-                        sh "python3 -m venv ${VIRTUAL_ENV}"
+                    if (!fileExists("${env.WORKSPACE}\\${VIRTUAL_ENV}\\Scripts\\activate")) {
+                        bat "python -m venv ${VIRTUAL_ENV}"
                     }
-                    sh "source ${VIRTUAL_ENV}/bin/activate && pip install -r requirements.txt"
+                    bat "${VIRTUAL_ENV}\\Scripts\\pip install -r requirements.txt"
                 }
             }
         }
 
         stage('Lint') {
             steps {
-                sh "source ${VIRTUAL_ENV}/bin/activate && flake8 app.py"
+                bat "${VIRTUAL_ENV}\\Scripts\\flake8 app.py"
             }
         }
 
         stage('Test') {
             steps {
-                sh "source ${VIRTUAL_ENV}/bin/activate && pytest"
+                bat "${VIRTUAL_ENV}\\Scripts\\pytest"
             }
         }
 
         stage('Coverage') {
             steps {
-                sh "source ${VIRTUAL_ENV}/bin/activate && coverage run -m pytest"
-                sh "source ${VIRTUAL_ENV}/bin/activate && coverage report -m"
+                bat "${VIRTUAL_ENV}\\Scripts\\coverage run -m pytest"
+                bat "${VIRTUAL_ENV}\\Scripts\\coverage report -m"
             }
         }
 
         stage('Security Scan') {
             steps {
-                sh "source ${VIRTUAL_ENV}/bin/activate && bandit -r ."
+                bat "${VIRTUAL_ENV}\\Scripts\\bandit -r ."
             }
         }
 
         stage('Deploy') {
             steps {
-                sh "echo Deploying application..."
-                sh "cp app.py /tmp/deployed_app.py"
+                bat "echo Deploying application..."
+                bat "copy app.py C:\\temp\\deployed_app.py"
             }
         }
     }
