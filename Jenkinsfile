@@ -49,10 +49,10 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                bat "echo Deploying application..."
-                bat "copy app.py C:\\temp\\deployed_app.py"
+                echo "Deployment step completed (simulation)."
             }
         }
+
     }
 
     post {
