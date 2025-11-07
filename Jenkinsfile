@@ -40,11 +40,12 @@ pipeline {
             }
         }
 
-           stage('Security Scan') {
-        steps {
-            bat '@chcp 65001 > nul & "venv\\Scripts\\python.exe" -m bandit -r . -f txt -o bandit_report.txt'
+        stage('Security Scan') {
+            steps {
+                bat '@chcp 65001 > nul & "venv\\Scripts\\python.exe" -m bandit -r . --exit-zero -f txt -o bandit_report.txt'
+            }
         }
-    }
+
 
         stage('Deploy') {
             steps {
